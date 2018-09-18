@@ -1,0 +1,10 @@
+django>=2.1.1,<3.0
+
+# Database connector.
+psycopg2>=2.7.5,<2.8
+
+# Authentication
+mozilla-django-oidc>=1.1.2,<2.0
+
+# Storage
+django-storages>=1.7.1,<2.0
