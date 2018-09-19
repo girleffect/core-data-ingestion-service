@@ -17,11 +17,16 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.urls import path, include
 
-from data_ingestion_service.views import HomePageView
+from data_ingestion_service.views import (
+    HomePageView,
+    LoginRedirectWithQueryStringView
+)
 
 
 urlpatterns = [
-    path('test/', login_required(HomePageView.as_view()), name='home'),
+    path(r'login/', LoginRedirectWithQueryStringView.as_view(), name="login"),
+    path('test/', login_required(HomePageView.as_view()), name='test'),
+    path('', HomePageView.as_view(), name='home'),
     path('admin/', admin.site.urls),
     path(r'oidc/', include('mozilla_django_oidc.urls')),
 ]

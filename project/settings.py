@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    'data_ingestion_service',
     'django.contrib.admin',
     'django.contrib.auth',
     'mozilla_django_oidc',
@@ -56,8 +57,7 @@ OIDC_OP_TOKEN_ENDPOINT = os.environ['OIDC_OP_TOKEN_ENDPOINT']
 OIDC_OP_USER_ENDPOINT = os.environ['OIDC_OP_USER_ENDPOINT']
 
 # Changed for mozilla oidc
-
-LOGIN_URL=reverse_lazy("oidc_authentication_init")
+LOGIN_URL=reverse_lazy("login")
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
