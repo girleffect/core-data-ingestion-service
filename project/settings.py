@@ -25,8 +25,8 @@ SECRET_KEY = 'qt6mpx!55ioy(e8mulyp@v(qz%daoal#j&_ih0l352_8$gi$*j'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+# NOTE: DO NOT DO THIS FOR ANY PRODUCTION DJANGO.
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
