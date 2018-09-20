@@ -1,9 +1,14 @@
+from django.contrib import messages
+from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views.generic import (
     TemplateView,
     RedirectView
 )
 from django.views.decorators.cache import never_cache
-from django.utils.decorators import method_decorator
+from django.views.generic.edit import CreateView
+
+from data_ingestion_service.models import StoredFiles
 
 
 @method_decorator(never_cache, "dispatch")
@@ -30,5 +35,20 @@ class LoginRedirectWithQueryStringView(RedirectView):
         return super().dispatch(request, *args, **kwargs)
 
 class HomePageView(TemplateView):
+    template_name = "data_ingestion_service/home.html"
 
-    template_name = "data_ingestion_service/temp.html"
+
+class FileSaveView(CreateView):
+    template_name = "data_ingestion_service/form.html"
+    model = StoredFiles
+    fields = ["file"]
+
+    def form_valid(self, form):
+        # Add current user to form instance, before checking form validity and
+        # allowing it to save the instance.
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, "File successfully uploaded.")
+        return reverse("fileupload")

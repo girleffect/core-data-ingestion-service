@@ -18,15 +18,20 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path, include
 
 from data_ingestion_service.views import (
+    FileSaveView,
     HomePageView,
-    LoginRedirectWithQueryStringView
+    LoginRedirectWithQueryStringView,
 )
 
 
 urlpatterns = [
-    path(r'login/', LoginRedirectWithQueryStringView.as_view(), name="login"),
-    path('test/', login_required(HomePageView.as_view()), name='test'),
-    path('', HomePageView.as_view(), name='home'),
-    path('admin/', admin.site.urls),
-    path(r'oidc/', include('mozilla_django_oidc.urls')),
+    path("admin/", admin.site.urls),
+
+    # Project urls
+    path("", HomePageView.as_view(), name="home"),
+    path("login/", LoginRedirectWithQueryStringView.as_view(), name="login"),
+    path("fileupload/", login_required(FileSaveView.as_view()), name="fileupload"),
+
+    # Includes
+    path(r"oidc/", include("mozilla_django_oidc.urls")),
 ]

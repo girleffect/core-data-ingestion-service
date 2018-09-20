@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <!-- links -->
+        <a href="{% url "fileupload" %}">File upload</a>
+        <!-- end links -->
+
+        <!-- logoutForm -->
+        <form action="{% url "oidc_logout" %}" method="post">
+            {% csrf_token %}
+            <div class="submit">
+                <input class="button" type="submit" value="Logout" />
+            </div>
+        </form>
+        <!-- end logoutForm -->
+    {% else %}
+        <a class="Button" href="{% url "oidc_authentication_init" %}">Login</a>
+    {% endif %}
+{% endblock %}

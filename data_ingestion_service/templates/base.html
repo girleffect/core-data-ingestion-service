@@ -1,0 +1,75 @@
+{% load i18n static %}
+
+<!DOCTYPE html>
+
+{% comment %}
+    TODO: Check what additions are needed for translation. There are already other tickets for this.
+{% endcomment %}
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}">
+    <head>
+        {% comment %}
+            Only override the head block if there is no other way around it.
+        {% endcomment %}
+        {% block head %}
+            <title>{% block metatitle %}{% endblock %}</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+
+            <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "data_ingestion_service/css/style.feature.css" %}{% endblock %}" />
+            {% block extrastyle-feature %}{% endblock %}
+
+            {% comment %}
+                Generic block for extra header content that is not style related.
+            {% endcomment %}
+            {% block extrahead %}{% endblock %}
+
+        {% endblock %}
+    </head>
+
+    <body>
+        <div id="container" class="Container">
+
+            <!-- Header -->
+            <div id="header" class="Header">
+                <div id="branding" class="Header-branding">
+                    {% block branding %}{% endblock %}
+                </div>
+                <div id="title" class="Header-title">
+                    {% block title %}<h1>Data ingestion site</h1>{% endblock %}
+                </div>
+                <div class="breadcrumbs">
+                    {% block links %}
+                        <a href="{% url "home" %}">Home</a>
+                    {% endblock %}
+                </div>
+                {% comment %}
+                    There might be a need for a nav later on.
+                {% endcomment %}
+                {% block header-nav %}{% endblock %}
+            </div>
+            <!-- END Header -->
+
+            {% comment %}
+                This allows django messages from the messaging framework to be displayed.
+            {% endcomment %}
+            {% block messages %}
+                {% if messages %}
+                    <div id="messagelist" class="Messages">
+                        {% for message in messages %}
+                            <div {% if message.tags %}class="Message Message--{{ message.tags }}"{% endif %}>{{ message|capfirst }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endblock messages %}
+
+            {% comment %}
+                Generally only changing content will suffice for templates.
+            {% endcomment %}
+            <div id="content" class="Content">
+                {% block content %}{% endblock %}
+            </div>
+
+            {% block footer %}
+            {% endblock %}
+        </div>
+    </body>
+</html>
