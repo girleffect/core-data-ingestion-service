@@ -8,3 +8,8 @@
 {% endif %}
 {# end defaultDangoMessageFrameworkDisplay #}
 Temp template
+{% if user.is_authenticated %}
+    Logged in
+{% else %}
+    Not logged in
+{% endif %}

@@ -44,7 +44,8 @@ INSTALLED_APPS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'mozilla_django_oidc.auth.OIDCAuthenticationBackend',
+    'data_ingestion_service.auth.GirlEffectOIDCBackend',
+    'django.contrib.auth.backends.ModelBackend'
 ]
 
 # Mozilla oidc setup
