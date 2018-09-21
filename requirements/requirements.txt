@@ -8,5 +8,7 @@ mozilla-django-oidc>=1.1.2,<2.0
 
 # Storage
 django-storages>=1.7.1,<2.0
+boto3>=1.9.7,<2.0
+botocore>=1.12.7,<1.13
 
 environs>=2.1.0,<3.0

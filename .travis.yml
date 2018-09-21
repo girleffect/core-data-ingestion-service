@@ -1,0 +1,27 @@
+sudo: required
+language: python
+python:
+- '3.7'
+addons:
+  postgresql: '9.6'
+services:
+- docker
+- postgresql
+deploy:
+- provider: script
+  script: bash ./scripts/docker_push.sh
+  on:
+    branch: master
+- provider: script
+  script: bash ./scripts/docker_push.sh
+  on:
+    branch: develop
+- provider: script
+  script: bash ./scripts/docker_push.sh
+  on:
+    all_branches: true
+    condition: "${TRAVIS_BRANCH} =~ ^release.*$"
+env:
+  global:
+  - secure: wKY/lgdhvDkQLevsT7pX/K9OvXZyBsqnZW5c8JCLIRbq4YODrbAw4Ppxcnrpxy0vBidhQcMT2b+vmfOIt9FWTgCDB9bn6aD7Gg4oQqLuUNmG3EJCB4PdYxNd/YmhuLCpudWoNDNWogVfyZRjvpkDOq4fgI59JEhAfeVkeyC9Ol8y9VZCnz202YhLPtviD8Dfr5WESV/kQBaDLyf2/op9y9go5XRgdj43dsnqTr/jm334z1dX4W+OYY2fRJTT5c83etzXZfFOMymT233N194mEGJQXx40rhO5Tp5yF042Mcc5d6A+dVOZQA7bt8zOmAN+GSjrm6Jus1+jQ6jvs/fRqeoqZsqoss5n46V6+rdvqTEhBRcJ2QxS/SoJDbR0Y7JAzGk9pFyL5KU2lTsJ1tjGejZWuohH41iN5UYSnnn3qpfCng6aeyuWVdOibYA4wcWn3hP5WII5FJDDaEY1SmLbIyCw1TRkO4ed3zPAmD8gkcUxrkNt80EWtDxQeZFBtnKzmSIbxLTZpLQpF/SPMM5vhHXbgTMsPHNXnKBmpcRRAJI/N+eqoozRdDZf0Bj1i7kE8gJfE4O3NJ1yYv5eoSwHhy6IgbZc8Nqua5qy4jCk0GqXlXqyLliu1k8EekLky4D+s8O9//+rI31IymtRH9MHj9NL5iXggupfo+qQPoetPwU=
+  - secure: VJ4Y1yLNioYtTXFfynAObLt19hvxQyxejiwy6bQuAEv0p5ZAg5JAxI6TgbUm8VyWVcv5VPxcjzfH9NHdlt1fThDLz6koW+/ogh9+yXqhXTAy/VLX0CcEsoB06pBgezjhhuBdnMaXOILOeeqkOioDJhShQUgANJnqTIQvRUtwQTAxg+OnyuoX6BgVkZtEb2BImlYcMtYbaWeoxAhRnfSiTD2Q7TJiFHizTv0oz+dyde5rZpsOdyVXfTHt2GQ5a8HEElcJ6elXHt8nKLVxc8jnBR8as+QOvMd29q3qZWazPL7DN0PdtiX8Bh60XhqXinMBTyjzzZlQz5Knwchi1dnWnq5JaYdz6RDl713F8QOscf1+8Ccn94kyLNnYpbKP5feFjkAFOPfbsJatWWYgX++wwiRnFyTwKcNoYv8Duiq/Np79BfGo56n4hUYz8j/uA5ZGiSWunV3BSPacZNQGWEa5kvQJLWkgC6r5nsMYzHgUYvGo/j0R+LMN98P34YxQty8oX5YndRXNv/uEfQopSA/pEGNygLSLUYuPiFcQmQR4T6VKeuutgkGorH5N3clA0TM9lJiNlbF8gEGPU4awxt1/kVKopmFjW9GmB2FaYkH+k9nKV+C8ML9wylu7C1S/GOL2ex45TAIydK6dlDUL794rIAEeCo/dQo5wupB3CJzvINI=

@@ -157,44 +157,39 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_ROOT = env.str('MEDIA_ROOT', '/media')
+MEDIA_ROOT = env.str("MEDIA_ROOT", "media")
 
 # STORAGE
 # Unless env.USE_DEFAULT_STORAGE is set to false, this service will make use of
 # the default storage backend and settings.
-#if env.bool("USE_DEFAULT_STORAGE", True) is False:
-#    # Storage
-#    DEFAULT_FILE_STORAGE = "project.settings.FileStorage"
-#
-#    # CloudFront domain
-#    AWS_S3_CUSTOM_DOMAIN = env.str("AWS_S3_CUSTOM_DOMAIN")
-#
-#    AWS_ACCESS_KEY_ID = env.str("AWS_ACCESS_KEY_ID")
-#    AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY")
-#    AWS_STORAGE_BUCKET_NAME = env.str("AWS_STORAGE_BUCKET_NAME")
-#
-#    # Optional file paramaters
-#    AWS_S3_OBJECT_PARAMETERS = {
-#        "CacheControl": "max-age=360",
-#    }
-#    # Create separate backends to prevent file overriding when saving to static
-#    # and media.
-#    # backends/s3boto3.py l:194; location = setting('AWS_LOCATION', '')
-#    from storages.backends.s3boto3 import S3Boto3Storage
-#    class FileStorage(S3Boto3Storage):
-#        location = "/"
-#
-#    class MediaStorage(S3Boto3Storage):
-#        """
-#        Media should not be on the bucket root. Means storage needs to be defined
-#        one each FileField.
-#        """
-#        location = MEDIA_ROOT
-#else:
-from django.core.files.storage import FileSystemStorage
-class MediaStorage(FileSystemStorage):
-    """
-    Due to MediaStorage needing to be used explicitly, it needs to be set
-    for DefaultStorage as well.
-    """
-    location = MEDIA_ROOT
+if env.bool("USE_DEFAULT_STORAGE", True) is False:
+    # Storage
+    DEFAULT_FILE_STORAGE = "project.settings.FileStorage"
+
+    AWS_ACCESS_KEY_ID = env.str("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = env.str("AWS_STORAGE_BUCKET_NAME")
+
+    # Optional file paramaters
+    AWS_S3_OBJECT_PARAMETERS = {
+        "CacheControl": "max-age=360",
+    }
+
+    # Create separate backends to prevent file overriding when saving to static
+    # and media.
+    # backends/s3boto3.py l:194; location = setting('AWS_LOCATION', '')
+    from storages.backends.s3boto3 import S3Boto3Storage
+    class MediaStorage(S3Boto3Storage):
+        """
+        Media should not be on the bucket root. Means storage needs to be defined
+        one each FileField.
+        """
+        location = MEDIA_ROOT
+else:
+    from django.core.files.storage import FileSystemStorage
+    class MediaStorage(FileSystemStorage):
+        """
+        Due to MediaStorage needing to be used explicitly, it needs to be set
+        for DefaultStorage as well.
+        """
+        location = MEDIA_ROOT
