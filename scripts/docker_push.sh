@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPO=girleffect/core-data-ingestion-service
+REPO=geautomation/core-data-ingestion-service
 # Map "master" branch to "latest" tag. "develop" branch will have the "develop" tag.
 TAG=${TRAVIS_BRANCH/master/latest}
 # Tags may not contain slashes. Since git flow uses slashes as part of the branch name,
