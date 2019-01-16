@@ -121,5 +121,7 @@ class GirlEffectOIDCBackend(OIDCAuthenticationBackend):
         """
         # Example of how to prevent users without a verified email from
         # logging in.
+        # verified = super(GirlEffectOIDCBackend, self).verify_claims(claims)
         # verified = verified and claims.get("email_verified")
+        # return verified
         return True

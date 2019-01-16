@@ -10,6 +10,11 @@ CATEGORY_CHOICES = (
     ("offline_survey_data", "Offline Survey Data"),
 )
 
+CATEGORY_PATHS = {
+    None: "no_category/",
+    "offline_survey_data": "offline_surveys/"
+}
+
 def user_file_path(instance, filename):
     # Timestamp in microseconds since epoch time, use timezone as created_at is
     # not available till after the first creation.
@@ -22,8 +27,8 @@ def user_file_path(instance, filename):
     # <FileStorageRoot>/user_<user_id>/<created_at>_<filename>
     # Make use of the default filename to remove the need to infer the file
     # type and extension.
-    category = f"{instance.category}/" if instance.category else "none/"
-    return f"{category}user_{instance.user.id}/{microseconds}_{filename}"
+    return f"{CATEGORY_PATHS[instance.category]}" \
+        f"user_{instance.user.id}/{microseconds}_{filename}"
 
 
 class StoredFiles(models.Model):

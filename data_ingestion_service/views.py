@@ -53,6 +53,7 @@ class FileSaveView(CreateView):
     def get_success_url(self):
         messages.add_message(
             self.request, messages.SUCCESS,
-            "File successfully uploaded."
+            "File successfully uploaded to:" \
+            f" {self.get_form().instance.file.path}"
         )
         return reverse("fileupload")
