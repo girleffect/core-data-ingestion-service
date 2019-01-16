@@ -27,13 +27,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'qt6mpx!55ioy(e8mulyp@v(qz%daoal#j&_ih0l352_8$gi$*j'
+SECRET_KEY = env.str("SECRET_KEY", "qt6mpx!55ioy(e8mulyp@v(qz%daoal#j&_ih0l352_8$gi$*j")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", False)
 
 # NOTE: DO NOT DO THIS FOR ANY PRODUCTION DJANGO.
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", "127.0.0.1,localhost")
 
 # Application definition
 
@@ -54,13 +54,14 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Mozilla oidc setup
-OIDC_RP_SCOPES = 'openid profile site roles'
-OIDC_RP_CLIENT_ID = os.environ['OIDC_RP_CLIENT_ID']
-OIDC_RP_CLIENT_SECRET = os.environ['OIDC_RP_CLIENT_SECRET']
-OIDC_OP = os.environ['OIDC_OP']
-OIDC_OP_AUTHORIZATION_ENDPOINT = os.environ['OIDC_OP_AUTHORIZATION_ENDPOINT']
-OIDC_OP_TOKEN_ENDPOINT = os.environ['OIDC_OP_TOKEN_ENDPOINT']
-OIDC_OP_USER_ENDPOINT = os.environ['OIDC_OP_USER_ENDPOINT']
+if not env.bool("BUILDER", False):
+    OIDC_RP_SCOPES = 'openid profile site roles'
+    OIDC_RP_CLIENT_ID = os.environ['OIDC_RP_CLIENT_ID']
+    OIDC_RP_CLIENT_SECRET = os.environ['OIDC_RP_CLIENT_SECRET']
+    OIDC_OP = os.environ['OIDC_OP']
+    OIDC_OP_AUTHORIZATION_ENDPOINT = os.environ['OIDC_OP_AUTHORIZATION_ENDPOINT']
+    OIDC_OP_TOKEN_ENDPOINT = os.environ['OIDC_OP_TOKEN_ENDPOINT']
+    OIDC_OP_USER_ENDPOINT = os.environ['OIDC_OP_USER_ENDPOINT']
 
 # Changed for mozilla oidc
 LOGIN_URL=reverse_lazy("login")
@@ -157,6 +158,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = env.str("STATIC_ROOT", "static")
 MEDIA_ROOT = env.str("MEDIA_ROOT", "media")
 
 # STORAGE

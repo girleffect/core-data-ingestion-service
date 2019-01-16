@@ -119,8 +119,7 @@ class GirlEffectOIDCBackend(OIDCAuthenticationBackend):
         This function can be used to prevent authorisation of users based
         on claims information.
         """
-        verified = super(GirlEffectOIDCBackend, self).verify_claims(claims)
         # Example of how to prevent users without a verified email from
         # logging in.
         # verified = verified and claims.get("email_verified")
-        return verified
+        return True
