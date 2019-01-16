@@ -11,7 +11,6 @@ CATEGORY_CHOICES = (
 )
 
 CATEGORY_PATHS = {
-    None: "no_category/",
     "offline_survey_data": "offline_surveys/"
 }
 
@@ -27,7 +26,7 @@ def user_file_path(instance, filename):
     # <FileStorageRoot>/user_<user_id>/<created_at>_<filename>
     # Make use of the default filename to remove the need to infer the file
     # type and extension.
-    return f"{CATEGORY_PATHS[instance.category]}" \
+    return f"{CATEGORY_PATHS.get(instance.category, 'no_category/')}" \
         f"user_{instance.user.id}/{microseconds}_{filename}"
 
 
