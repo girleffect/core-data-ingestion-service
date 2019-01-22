@@ -54,6 +54,6 @@ class FileSaveView(CreateView):
         messages.add_message(
             self.request, messages.SUCCESS,
             "File successfully uploaded to:" \
-            f" {self.get_form().instance.file.path}"
+            f" {self.get_form().instance.file.name}"
         )
         return reverse("fileupload")
