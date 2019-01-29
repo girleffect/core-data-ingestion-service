@@ -14,8 +14,24 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.contrib.auth.decorators import login_required
+from django.urls import path, include
+
+from data_ingestion_service.views import (
+    FileSaveView,
+    HomePageView,
+    LoginRedirectWithQueryStringView,
+)
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
+
+    # Project urls
+    path("", HomePageView.as_view(), name="home"),
+    path("login/", LoginRedirectWithQueryStringView.as_view(), name="login"),
+    path("fileupload/", login_required(FileSaveView.as_view()), name="fileupload"),
+
+    # Includes
+    path(r"oidc/", include("mozilla_django_oidc.urls")),
 ]

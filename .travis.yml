@@ -1,0 +1,22 @@
+sudo: required
+language: generic
+services:
+- docker
+deploy:
+- provider: script
+  script: bash ./scripts/docker_push.sh
+  on:
+    branch: master
+- provider: script
+  script: bash ./scripts/docker_push.sh
+  on:
+    branch: develop
+- provider: script
+  script: bash ./scripts/docker_push.sh
+  on:
+    all_branches: true
+    condition: "${TRAVIS_BRANCH} =~ ^release.*$"
+env:
+  global:
+  - secure: BLqetIsfrMTrDsvV9Yi9HqFOe/X5mmDuaukYQvMjtbbLJHGy8MMIqR5gI9Ck3B2gaeP72Cb4QLoXi4gv2mQpfXjVircVHyf1F2ZLVE4tkGgFxmuCOPiutCXweeyhuOXh3cLmajvGnfGAgzyxXVR3GRbSXlVdjbo5I7aCXSf7KQd23KILI/SXw/2d1qobYlgcDuor3VXBJwwygSadls5obTbAtJMF2yh3cBr3E9r5Hul2vj45m3ZiLU6QvfSaRGbCswlNlwwBLg8YGF7msfrE3PQuGSr08+MrsnBcUSoMcDevWa68qlHdVyqQ14jSi1eEKCXLwtt4rgNJO9eGBfw1G4D1FeR37KCAS7DH2Niu2lSxvXQGeK+IBS8RCYORhLe5vwgs+XQ3CK1SJztEig3Z9Zw1axeiwRSFHlTAaxq+SsmQuv+FvI5op3GRyoU7rPgMLMxbMKVr9Y3cxx+jn5rZGNtWVfTybSkfTeMGOtmFHGJohcgZRY7Vh1bRQ1nCYGZqZ/MxrTMKMm074RLTGWpe1ZkWDTMZbPrBFGIbf4y+bWcQhoJnfJxW9+UMM3ePyMuQkSOArj6bjUcGjfALByIPO+jGT4Gxgu34cfvjXx/YdfMBd6cL15uHc5gPv8IdTn1mUbxHjQGBSOv1oGZvxbj8v2nkH14oRfNDs2DPDfpkfz4=
+  - secure: mRpIdZ4QyI+k4he/owNpkJ5sgR/Mzs3FMusBmclAUakDUobkmqKuxp6MgPalsz80aoAiy4/FXryfjxCWNPqQJ/Kf267/rI4N82eLahV11gGgPxCgfqWXY6smvVLzUw0BrCnaIo+DOi+ieUV7XLvGp6Uzuo+iawri6d5k6NI0LJ8Eu2uDagJ3r+GZqvz+uTobsdbgzxjhPk0iU3zpNztBrv0I3aIg5C+z15/MVnOG1rxeHBWj+19qj4JyxW1P/smsRJdKpCwzphJTAe+zR/e2uIQES7Yto4T3cwwqk5DhcB1B4M+yIqoPLNF6a9CvkgzHk6tVjq3HJt3Fv3fCz1fAcklf716FXxsyqxhPfSpJmndZd/T/w9ZL4OxnYxdK64ECXUWQvXnuH6vVmQH5LuzFJANqvMXN0s3KhrRuxdXNc/h+1ZOjjmfvzFj076fpwLx4es2mOMbBiWmn7R0cdNTBUnU8ZrOtZd+cks5hUtd9SzCs72+GP6m6hZnJ3qQlDGsmmGuaRyTBn4kUwhAXOn+OMsFVuv7AZhhGnRAk+Dd77ELYvL69I7A1uPRIf+zTXbeNQqwdnXYDCmh/HnuI2nkUcXmv026a/JN5YbHWDCOyViDYt3psogMYpbFwL2NlFsmyqHeaWOP8+LhNAqzKrl6lrsni2wfkbuCZr/+EyVxCyKo=

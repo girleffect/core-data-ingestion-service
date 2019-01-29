@@ -12,6 +12,13 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+from environs import Env
+
+from django.urls import reverse_lazy
+
+env = Env()
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,17 +27,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'qt6mpx!55ioy(e8mulyp@v(qz%daoal#j&_ih0l352_8$gi$*j'
+SECRET_KEY = env.str("SECRET_KEY", "qt6mpx!55ioy(e8mulyp@v(qz%daoal#j&_ih0l352_8$gi$*j")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", False)
 
-ALLOWED_HOSTS = []
-
+# NOTE: DO NOT DO THIS FOR ANY PRODUCTION DJANGO.
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", "127.0.0.1,localhost")
 
 # Application definition
 
 INSTALLED_APPS = [
+    'data_ingestion_service',
     'django.contrib.admin',
     'django.contrib.auth',
     'mozilla_django_oidc',
@@ -39,20 +47,24 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
-AUTHENTICATION_BACKENDS =[
-    'mozilla_django_oidc.auth.OIDCAuthenticationBackend',
+
+AUTHENTICATION_BACKENDS = [
+    'data_ingestion_service.auth.GirlEffectOIDCBackend',
+    'django.contrib.auth.backends.ModelBackend'
 ]
 
 # Mozilla oidc setup
-OIDC_RP_SCOPES = 'openid profile site roles'
-OIDC_RP_CLIENT_ID = os.environ['OIDC_RP_CLIENT_ID']
-OIDC_RP_CLIENT_SECRET = os.environ['OIDC_RP_CLIENT_SECRET']
-OIDC_OP = os.environ['OIDC_OP']
-OIDC_OP_AUTHORIZATION_ENDPOINT = os.environ['OIDC_OP_AUTHORIZATION_ENDPOINT']
-OIDC_OP_TOKEN_ENDPOINT = os.environ['OIDC_OP_TOKEN_ENDPOINT']
-OIDC_OP_USER_ENDPOINT = os.environ['OIDC_OP_USER_ENDPOINT']
+if not env.bool("BUILDER", False):
+    OIDC_RP_SCOPES = 'openid profile site roles'
+    OIDC_RP_CLIENT_ID = os.environ['OIDC_RP_CLIENT_ID']
+    OIDC_RP_CLIENT_SECRET = os.environ['OIDC_RP_CLIENT_SECRET']
+    OIDC_OP = os.environ['OIDC_OP']
+    OIDC_OP_AUTHORIZATION_ENDPOINT = os.environ['OIDC_OP_AUTHORIZATION_ENDPOINT']
+    OIDC_OP_TOKEN_ENDPOINT = os.environ['OIDC_OP_TOKEN_ENDPOINT']
+    OIDC_OP_USER_ENDPOINT = os.environ['OIDC_OP_USER_ENDPOINT']
 
 # Changed for mozilla oidc
+LOGIN_URL=reverse_lazy("login")
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
@@ -90,10 +102,21 @@ WSGI_APPLICATION = 'data_ingestion_service.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#    }
+#}
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.environ.get('DB_NAME', 'data_ingestion_service'),
+        'USER': os.environ.get('DB_USER', 'data_ingestion_service'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'password'),
+        'HOST': os.environ.get('DB_HOST', 'db'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
+        'CONN_MAX_AGE': 600
     }
 }
 
@@ -135,3 +158,40 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = env.str("STATIC_ROOT", "static")
+MEDIA_ROOT = env.str("MEDIA_ROOT", "media")
+
+# STORAGE
+# Unless env.USE_DEFAULT_STORAGE is set to false, this service will make use of
+# the default storage backend and settings.
+if env.bool("USE_DEFAULT_STORAGE", True) is False:
+    # Storage
+    DEFAULT_FILE_STORAGE = "project.settings.FileStorage"
+
+    AWS_ACCESS_KEY_ID = env.str("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = env.str("AWS_STORAGE_BUCKET_NAME")
+
+    # Optional file paramaters
+    AWS_S3_OBJECT_PARAMETERS = {
+        "CacheControl": "max-age=360",
+    }
+
+    # Create separate backends to prevent file overriding when saving to static
+    # and media.
+    # backends/s3boto3.py l:194; location = setting('AWS_LOCATION', '')
+    from storages.backends.s3boto3 import S3Boto3Storage
+    class MediaStorage(S3Boto3Storage):
+        """
+        Media should not be on the bucket root. Means storage needs to be defined
+        one each FileField.
+        """
+        location = MEDIA_ROOT
+else:
+    from django.core.files.storage import FileSystemStorage
+    class MediaStorage(FileSystemStorage):
+        """
+        Due to MediaStorage needing to be used explicitly, it needs to be set
+        for DefaultStorage as well.
+        """
+        location = MEDIA_ROOT
