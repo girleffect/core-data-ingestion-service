@@ -26,8 +26,8 @@ def user_file_path(instance, filename):
     # <FileStorageRoot>/user_<user_id>/<created_at>_<filename>
     # Make use of the default filename to remove the need to infer the file
     # type and extension.
-    return f"{CATEGORY_PATHS.get(instance.category, 'no_category/')}" \
-        f"user_{instance.user.id}/{microseconds}_{filename}"
+    return f"{CATEGORY_PATHS.get(instance.category, 'other/')}" \
+        f"{microseconds}_{filename}"
 
 
 class StoredFiles(models.Model):
