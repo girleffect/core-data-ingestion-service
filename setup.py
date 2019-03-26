@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="data_ingestion_service",
-    version="1.0.0",
+    version="1.0.1",
     description="Girl Effect Core Data Ingestion Service",
     author="Praekelt Consulting",
     author_email="dev@praekelt.com",
